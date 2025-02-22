@@ -1,6 +1,8 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ElevatorHomingCommand;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ManipulatorSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -13,6 +15,9 @@ public class RobotContainer {
 
   private final ManipulatorSubsystem m_manipulatorSubsystem = 
       new ManipulatorSubsystem();
+
+  private final ElevatorSubsystem m_elevatorSubsystem = 
+      new ElevatorSubsystem();
 
   public RobotContainer() {
     configureBindings();
@@ -56,5 +61,11 @@ public class RobotContainer {
     Trigger copilotControllerRC = m_copilotController.rightStick(); // Copilot's Right Stick (Click)
 
     driverControllerA.whileTrue(m_manipulatorSubsystem.getManipulatorDriveCommand(0.1));
+    driverControllerB.whileTrue(m_manipulatorSubsystem.getManipulatorDriveCommand(-0.1));
+    driverControllerX.onTrue(m_manipulatorSubsystem.extendCoralManipulator());
+    driverControllerY.onTrue(m_manipulatorSubsystem.retractCoralManipulator());
+
+    driverControllerU.onTrue(m_elevatorSubsystem.moveElevatorToPositionCommand(100));
+    driverControllerD.onTrue(m_elevatorSubsystem.moveElevatorToPositionCommand(0));
   }
 }

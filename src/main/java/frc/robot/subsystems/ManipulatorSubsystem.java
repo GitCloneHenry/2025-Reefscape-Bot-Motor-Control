@@ -6,9 +6,10 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
+// import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,7 +27,7 @@ public class ManipulatorSubsystem extends SubsystemBase {
     private final TalonFXSConfiguration m_manipulatorDriveConfiguration = new TalonFXSConfiguration();
     private final TalonFXConfiguration  m_manipulatorAngleConfiguration = new  TalonFXConfiguration();
 
-    private final VelocityVoltage m_velocityVoltage = new VelocityVoltage(0).withSlot(0);
+    // private final VelocityVoltage m_velocityVoltage = new VelocityVoltage(0).withSlot(0);
     private final MotionMagicVoltage m_motionMagicVoltage = new MotionMagicVoltage(0).withSlot(0);
 
     private final DutyCycleEncoder m_manipulatorAngleEncoder = new DutyCycleEncoder(DIOConstants.kManipulatorAngleEncoderID);
@@ -63,7 +64,10 @@ public class ManipulatorSubsystem extends SubsystemBase {
         m_manipulatorAngleMotor.getConfigurator().apply(
                 m_manipulatorAngleConfiguration, 0.050);
         
+        m_manipulatorDriveMotor.setNeutralMode(NeutralModeValue.Coast);
+
         m_manipulatorAngleMotor.setPosition(m_manipulatorAngleEncoder.get());
+        m_manipulatorAngleMotor.setNeutralMode(NeutralModeValue.Brake);
     }
 
     /**Get Manipulator Command
@@ -85,14 +89,14 @@ public class ManipulatorSubsystem extends SubsystemBase {
      * @return Returns a Command that triggers the manipulator to extend.
      */
     public Command extendCoralManipulator() {
-        return Commands.runOnce(() -> m_manipulatorAngleMotor.setControl(m_motionMagicVoltage.withPosition(EncoderConstants.kDesiredManipulatorPositionExtended)));
+        return Commands.runOnce(() -> m_manipulatorAngleMotor.setControl(m_motionMagicVoltage.withPosition(EncoderConstants.kDesiredManipulatorPositionExtended)), this);
     }
 
     /**Retracts the Coral Manipulator
      * @return Returns a Command that triggers the manipulator to retract.
      */
     public Command retractCoralManipulator() {
-        return Commands.runOnce(() -> m_manipulatorAngleMotor.setControl(m_motionMagicVoltage.withPosition(EncoderConstants.kDesiredManipulatorPositionRetracted)));
+        return Commands.runOnce(() -> m_manipulatorAngleMotor.setControl(m_motionMagicVoltage.withPosition(EncoderConstants.kDesiredManipulatorPositionRetracted)), this);
     }
 
     @Override
