@@ -2,6 +2,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ElevatorHomingCommand;
+import frc.robot.subsystems.BillsLunchSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ManipulatorSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -16,8 +17,11 @@ public class RobotContainer {
   private final ManipulatorSubsystem m_manipulatorSubsystem = 
       new ManipulatorSubsystem();
 
-  private final ElevatorSubsystem m_elevatorSubsystem = 
-      new ElevatorSubsystem();
+  private final BillsLunchSubsystem m_billsLunchSubsystem = 
+      new BillsLunchSubsystem();
+
+  // private final ElevatorSubsystem m_elevatorSubsystem = 
+  //     new ElevatorSubsystem();
 
   public RobotContainer() {
     configureBindings();
@@ -62,10 +66,10 @@ public class RobotContainer {
 
     driverControllerA.whileTrue(m_manipulatorSubsystem.getManipulatorDriveCommand(0.1));
     driverControllerB.whileTrue(m_manipulatorSubsystem.getManipulatorDriveCommand(-0.1));
-    driverControllerX.onTrue(m_manipulatorSubsystem.extendCoralManipulator());
-    driverControllerY.onTrue(m_manipulatorSubsystem.retractCoralManipulator());
+    driverControllerX.onTrue(m_billsLunchSubsystem.moveToPosition(100));
+    // driverControllerX.onFalse(m_manipulatorSubsystem.);
 
-    driverControllerU.onTrue(m_elevatorSubsystem.moveElevatorToPositionCommand(100));
-    driverControllerD.onTrue(m_elevatorSubsystem.moveElevatorToPositionCommand(0));
+    // driverControllerU.onTrue(m_elevatorSubsystem.moveElevatorToPositionCommand(100));
+    // driverControllerD.onTrue(m_elevatorSubsystem.moveElevatorToPositionCommand(0));
   }
 }

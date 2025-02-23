@@ -12,18 +12,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.CANConstants;
 import frc.robot.Constants.DIOConstants;
+import frc.robot.Constants.EncoderConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
-    private final TalonFX m_manipulatorAngleMotor = new TalonFX(CANConstants.kManipulatorAngleMotorID);
+    private final TalonFX m_climberAngleMotor = new TalonFX(CANConstants.kClimberAngleMotorID);
 
-    private final TalonFXConfiguration m_manipulatorAngleConfiguration = new TalonFXConfiguration();
+    private final TalonFXConfiguration m_climberAngleConfiguration = new TalonFXConfiguration();
 
     private final MotionMagicVoltage m_motionMagicVoltage = new MotionMagicVoltage(0).withSlot(0);
 
-    private final DutyCycleEncoder m_manipulatorAngleEncoder = new DutyCycleEncoder(DIOConstants.kManipulatorAngleEncoderID);
-
-    private double minimumClimberPosition = 0;
-    private double maximumClimberPosition = 100;
+    private final DutyCycleEncoder m_climberAngleEncoder = new DutyCycleEncoder(DIOConstants.kClimberAngleEncoderID);
 
     private double m_targetClimberPosition;
 
@@ -32,9 +30,9 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void applyMotorConfigurations() {
-        Slot0Configs angleSlot0 = m_manipulatorAngleConfiguration.Slot0;
+        Slot0Configs angleSlot0 = m_climberAngleConfiguration.Slot0;
 
-        MotionMagicConfigs angleMotionMagic = m_manipulatorAngleConfiguration.MotionMagic;
+        MotionMagicConfigs angleMotionMagic = m_climberAngleConfiguration.MotionMagic;
 
         angleSlot0.kS = 0.24;
         angleSlot0.kV = 0.12;
@@ -46,25 +44,23 @@ public class ClimberSubsystem extends SubsystemBase {
         angleMotionMagic.MotionMagicAcceleration   = 160;
         angleMotionMagic.MotionMagicJerk           = 1600;
 
-        m_manipulatorAngleMotor.getConfigurator().apply(
-                m_manipulatorAngleConfiguration, 0.050);
+        m_climberAngleMotor.getConfigurator().apply(
+                m_climberAngleConfiguration, 0.050);
         
-        m_manipulatorAngleMotor.setPosition(m_manipulatorAngleEncoder.get());
-        m_manipulatorAngleMotor.setNeutralMode(NeutralModeValue.Brake);
+        m_climberAngleMotor.setPosition(m_climberAngleEncoder.get());
+        m_climberAngleMotor.setNeutralMode(NeutralModeValue.Brake);
     }
 
     public void incrementClimberPosition(double value) {
-        double encoderPosition = m_manipulatorAngleMotor.getPosition().getValueAsDouble();
+        double encoderPosition = m_climberAngleMotor.getPosition().getValueAsDouble();
 
-        if (encoderPosition + value < minimumClimberPosition || encoderPosition + value > maximumClimberPosition) {
+        if (encoderPosition + value < EncoderConstants.kMinimumAcceptableClimberPosition || 
+            encoderPosition + value > EncoderConstants.kMaximumAcceptableClimberPosition) {
             return;
         }
 
         m_targetClimberPosition += value;
-    }
 
-    @Override
-    public void periodic() {
-        m_manipulatorAngleMotor.setControl(m_motionMagicVoltage.withPosition(m_targetClimberPosition));
+        m_climberAngleMotor.setControl(m_motionMagicVoltage.withPosition(m_targetClimberPosition));
     }
 }

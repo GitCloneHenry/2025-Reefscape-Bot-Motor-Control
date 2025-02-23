@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,7 +23,7 @@ import frc.robot.Constants.EncoderConstants;
 
 public class ManipulatorSubsystem extends SubsystemBase {
     private final TalonFXS m_manipulatorDriveMotor = new TalonFXS(CANConstants.kManipulatorDriveMotorID);
-    private final TalonFX  m_manipulatorAngleMotor = new TalonFX (CANConstants.kManipulatorAngleMotorID);
+    // private final TalonFX  m_manipulatorAngleMotor = new TalonFX (CANConstants.kManipulatorAngleMotorID);
 
     private final TalonFXSConfiguration m_manipulatorDriveConfiguration = new TalonFXSConfiguration();
     private final TalonFXConfiguration  m_manipulatorAngleConfiguration = new  TalonFXConfiguration();
@@ -55,19 +56,21 @@ public class ManipulatorSubsystem extends SubsystemBase {
         angleSlot0.kI = 0.5;
         angleSlot0.kD = 0.001;
 
+        m_manipulatorDriveConfiguration.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
+
         angleMotionMagic.MotionMagicCruiseVelocity = 80; 
         angleMotionMagic.MotionMagicAcceleration   = 160;
         angleMotionMagic.MotionMagicJerk           = 1600;
 
         m_manipulatorDriveMotor.getConfigurator().apply(
             m_manipulatorDriveConfiguration, 0.050);
-        m_manipulatorAngleMotor.getConfigurator().apply(
-                m_manipulatorAngleConfiguration, 0.050);
+        // m_manipulatorAngleMotor.getConfigurator().apply(
+        //         m_manipulatorAngleConfiguration, 0.050);
         
         m_manipulatorDriveMotor.setNeutralMode(NeutralModeValue.Coast);
 
-        m_manipulatorAngleMotor.setPosition(m_manipulatorAngleEncoder.get());
-        m_manipulatorAngleMotor.setNeutralMode(NeutralModeValue.Brake);
+        // m_manipulatorAngleMotor.setPosition(m_manipulatorAngleEncoder.get());
+        // m_manipulatorAngleMotor.setNeutralMode(NeutralModeValue.Brake);
     }
 
     /**Get Manipulator Command
@@ -89,14 +92,14 @@ public class ManipulatorSubsystem extends SubsystemBase {
      * @return Returns a Command that triggers the manipulator to extend.
      */
     public Command extendCoralManipulator() {
-        return Commands.runOnce(() -> m_manipulatorAngleMotor.setControl(m_motionMagicVoltage.withPosition(EncoderConstants.kDesiredManipulatorPositionExtended)), this);
+        return Commands.runOnce(() -> System.out.println("mfgh~") /*m_manipulatorAngleMotor.setControl(m_motionMagicVoltage.withPosition(EncoderConstants.kDesiredManipulatorPositionExtended))*/, this);
     }
 
     /**Retracts the Coral Manipulator
      * @return Returns a Command that triggers the manipulator to retract.
      */
     public Command retractCoralManipulator() {
-        return Commands.runOnce(() -> m_manipulatorAngleMotor.setControl(m_motionMagicVoltage.withPosition(EncoderConstants.kDesiredManipulatorPositionRetracted)), this);
+        return Commands.runOnce(() -> System.out.println("mfgh~") /*m_manipulatorAngleMotor.setControl(m_motionMagicVoltage.withPosition(EncoderConstants.kDesiredManipulatorPositionRetracted))*/, this);
     }
 
     @Override
