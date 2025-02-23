@@ -13,12 +13,15 @@ public final class Constants {
     public static final int kFloorIntakeAngleMotorID = 4;
     public static final int kClimberAngleMotorID     = 5;
     public static final int kBillsLunchDriveID       = 7;
+    public static final int kTiltRampDriveMotorID    = 8;
+    public static final int kTiltRampAngleMotorID    = 9;
   }
   public static class DIOConstants {
     public static final int kManipulatorAngleEncoderID = 0;
     public static final int kElevatorOpticalSensorID   = 1;
     public static final int kFloorIntakeAngleEncoderID = 2;
     public static final int kClimberAngleEncoderID     = 3;
+    public static final int kTiltRampAngleEncoderID    = 4;
   }
   public static class EncoderConstants {
     public static final double kDesiredManipulatorPositionExtended  = 100;

@@ -7,7 +7,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.RelativeEncoder;
+// import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -17,7 +17,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -32,7 +31,7 @@ public class FloorIntakeSubsystem extends SubsystemBase {
 
     private final TalonFXConfiguration m_floorIntakeAngleConfiguration = new TalonFXConfiguration();
 
-    private final RelativeEncoder m_floorIntakeDriveEncoder;
+    // private final RelativeEncoder m_floorIntakeDriveEncoder;
 
     private final SparkClosedLoopController m_floorIntakeDriveController;
 
@@ -44,7 +43,7 @@ public class FloorIntakeSubsystem extends SubsystemBase {
         m_floorIntakeDriveMotor = new SparkMax(CANConstants.kFloorIntakeDriveMotorID, MotorType.kBrushless);
         m_floorIntakeAngleMotor = new TalonFX (CANConstants.kFloorIntakeAngleMotorID);
 
-        m_floorIntakeDriveEncoder = m_floorIntakeDriveMotor.getEncoder();
+        // m_floorIntakeDriveEncoder = m_floorIntakeDriveMotor.getEncoder();
 
         m_floorIntakeDriveController = m_floorIntakeDriveMotor.getClosedLoopController();
 
