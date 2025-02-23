@@ -13,17 +13,14 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Configs.Neo550;
 import frc.robot.Constants.CANConstants;
 import frc.robot.Constants.DIOConstants;
-import frc.robot.Constants.ModuleConstants;
 
 public class FloorIntakeSubsystem extends SubsystemBase {
     private final SparkMax m_floorIntakeDriveMotor;
@@ -51,22 +48,6 @@ public class FloorIntakeSubsystem extends SubsystemBase {
     }
 
     public void applyMotorConfigurations() {
-        SparkMaxConfig floorIntakeDriveConfig = new SparkMaxConfig();
-        double floorIntakeDriveFeedForward = 1 / ModuleConstants.kFloorIntakeDriveFreeSpeedRps;
-
-        floorIntakeDriveConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(12);
-        floorIntakeDriveConfig
-            .closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(0.04, 0.0, 0.0)
-            .velocityFF(floorIntakeDriveFeedForward)
-            .outputRange(-1, 1);
-
-        m_floorIntakeDriveMotor.configure(
-            floorIntakeDriveConfig, 
-            ResetMode.kResetSafeParameters, 
-            PersistMode.kPersistParameters);
-
         Slot0Configs angleSlot0 = m_floorIntakeAngleConfiguration.Slot0;
 
         MotionMagicConfigs angleMotionMagic = m_floorIntakeAngleConfiguration.MotionMagic;
@@ -83,19 +64,23 @@ public class FloorIntakeSubsystem extends SubsystemBase {
 
         m_floorIntakeAngleMotor.getConfigurator().apply(
             m_floorIntakeAngleConfiguration, 0.050);
+        m_floorIntakeDriveMotor.configure(
+                Neo550.neoConfig, 
+                ResetMode.kResetSafeParameters, 
+                PersistMode.kPersistParameters);
         
         m_floorIntakeAngleMotor.setPosition(m_floorIntakeAngleEncoder.get());
         m_floorIntakeAngleMotor.setNeutralMode(NeutralModeValue.Brake);
     }
 
-    public Command startFloorIntake() {
+    public Command extendAndIntake() {
         return Commands.runOnce(() -> {
             m_floorIntakeAngleMotor.setControl(m_motionMagicVoltage.withPosition(100));
             m_floorIntakeDriveController.setReference(1, ControlType.kVelocity);
         }, this);
     }
 
-    public Command stopFloorIntake() {
+    public Command retractAndStop() {
         m_floorIntakeAngleMotor.setControl(m_motionMagicVoltage.withPosition(100));
         return Commands.runOnce(() -> m_floorIntakeDriveController.setReference(0, ControlType.kVelocity), this);
     }

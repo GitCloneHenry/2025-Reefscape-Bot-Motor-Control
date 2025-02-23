@@ -1,7 +1,6 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ElevatorHomingCommand;
 import frc.robot.subsystems.BillsLunchSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ManipulatorSubsystem;
@@ -20,8 +19,8 @@ public class RobotContainer {
   private final BillsLunchSubsystem m_billsLunchSubsystem = 
       new BillsLunchSubsystem();
 
-  // private final ElevatorSubsystem m_elevatorSubsystem = 
-  //     new ElevatorSubsystem();
+  private final ElevatorSubsystem m_elevatorSubsystem = 
+      new ElevatorSubsystem();
 
   public RobotContainer() {
     configureBindings();

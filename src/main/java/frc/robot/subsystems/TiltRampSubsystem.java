@@ -13,17 +13,14 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Configs.Neo550;
 import frc.robot.Constants.CANConstants;
 import frc.robot.Constants.DIOConstants;
-import frc.robot.Constants.ModuleConstants;
 
 public class TiltRampSubsystem extends SubsystemBase {
     private final SparkMax m_tiltRampDriveMotor = new SparkMax(CANConstants.kTiltRampDriveMotorID, MotorType.kBrushless);;
@@ -42,22 +39,6 @@ public class TiltRampSubsystem extends SubsystemBase {
     }
 
     public void applyMotorConfigurations() {
-        SparkMaxConfig floorIntakeDriveConfig = new SparkMaxConfig();
-        double floorIntakeDriveFeedForward = 1 / ModuleConstants.kFloorIntakeDriveFreeSpeedRps;
-
-        floorIntakeDriveConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(12);
-        floorIntakeDriveConfig
-            .closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(0.04, 0.0, 0.0)
-            .velocityFF(floorIntakeDriveFeedForward)
-            .outputRange(-1, 1);
-
-        m_tiltRampDriveMotor.configure(
-            floorIntakeDriveConfig, 
-            ResetMode.kResetSafeParameters, 
-            PersistMode.kPersistParameters);
-
         Slot0Configs angleSlot0 = m_tiltRampAngleConfiguration.Slot0;
 
         MotionMagicConfigs angleMotionMagic = m_tiltRampAngleConfiguration.MotionMagic;
@@ -76,19 +57,24 @@ public class TiltRampSubsystem extends SubsystemBase {
 
         m_tiltRampAngleMotor.getConfigurator().apply(
             m_tiltRampAngleConfiguration, 0.050);
-        
+        m_tiltRampDriveMotor.configure(
+                Neo550.neoConfig, 
+                ResetMode.kResetSafeParameters, 
+                PersistMode.kPersistParameters);
+    
+
         m_tiltRampAngleMotor.setPosition(m_tiltRampAngleEncoder.get());
         m_tiltRampAngleMotor.setNeutralMode(NeutralModeValue.Brake);
     }
 
-    public Command startFloorIntake() {
+    public Command extendAndIntake() {
         return Commands.runOnce(() -> {
             m_tiltRampAngleMotor.setControl(m_motionMagicVoltage.withPosition(100));
             m_tiltRampDriveController.setReference(1, ControlType.kVelocity);
         }, this);
     }
 
-    public Command stopFloorIntake() {
+    public Command retractAndStop() {
         m_tiltRampAngleMotor.setControl(m_motionMagicVoltage.withPosition(100));
         return Commands.runOnce(() -> m_tiltRampDriveController.setReference(0, ControlType.kVelocity), this);
     }
